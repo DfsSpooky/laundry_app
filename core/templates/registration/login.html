@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Iniciar Sesión | Lavandería Moderna{% endblock %}</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <div class="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        
+        <div class="max-w-md w-full bg-white p-8 rounded-2xl shadow-lg space-y-8">
+            
+            <div class="text-center">
+                <a href="/" class="inline-block">
+                    <i class="fas fa-washing-machine text-5xl text-blue-600"></i>
+                </a>
+                <h2 class="mt-4 text-3xl font-bold text-gray-900">
+                    Inicia Sesión en tu Cuenta
+                </h2>
+                <p class="mt-2 text-sm text-gray-600">
+                    Bienvenido de nuevo a Lavandería Moderna.
+                </p>
+            </div>
+
+            <form method="post" class="mt-8 space-y-6">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 text-red-700 p-3 rounded-lg border border-red-200 text-sm">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="rounded-md shadow-sm -space-y-px">
+                    {% for field in form.visible_fields %}
+                    <div class="relative">
+                        <label for="{{ field.id_for_label }}" class="sr-only">{{ field.label }}</label>
+                        
+                        {% if field.name == 'username' %}
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </span>
+                        {% endif %}
+                        {% if field.name == 'password' %}
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </span>
+                        {% endif %}
+
+                        {{ field }}
+                    </div>
+                    {% if field.errors %}
+                        <p class="text-red-600 text-xs pt-1 pl-1">{{ field.errors|first }}</p>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="text-sm">
+                        <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i class="fas fa-lock h-5 w-5 text-blue-500 group-hover:text-blue-400"></i>
+                        </span>
+                        Iniciar Sesión
+                    </button>
+                </div>
+            </form>
+            
+            <div class="text-center text-sm text-gray-600">
+                <p>
+                    <a href="/" class="font-medium text-blue-600 hover:text-blue-500">
+                        <i class="fas fa-arrow-left mr-1"></i>
+                        Volver a la página principal
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Estilos base para los campos
+        const baseClasses = 'appearance-none rounded-none relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm';
+        
+        // Aplicar a cada campo del formulario
+        const usernameField = document.getElementById('id_username');
+        const passwordField = document.getElementById('id_password');
+
+        if (usernameField) {
+            usernameField.placeholder = 'Nombre de usuario';
+            usernameField.classList.add(...baseClasses.split(' '), 'rounded-t-md');
+        }
+        if (passwordField) {
+            passwordField.placeholder = 'Contraseña';
+            passwordField.classList.add(...baseClasses.split(' '), 'rounded-b-md');
+        }
+    });
+    </script>
+</body>
+</html>

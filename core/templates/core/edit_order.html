@@ -1,0 +1,176 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Editar Pedido #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">
+                Editar Pedido <span class="text-blue-600">#{{ order.id }}</span>
+            </h1>
+            <p class="text-gray-500 mt-1">Modifica los detalles del pedido, actualiza su estado o cambia los artículos.</p>
+        </div>
+        <a href="{% url 'manage_customer_orders' order.customer.customer_code %}" class="inline-flex items-center justify-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold text-sm">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Volver a Pedidos del Cliente
+        </a>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-md">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Resumen Actual</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">Cliente</h3>
+                <p class="text-lg font-semibold text-gray-800">{{ order.customer.name }}</p>
+            </div>
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">Estado del Pedido</h3>
+                <p class="text-lg font-semibold text-gray-800">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                        {% if order.status == 'COMPLETED' %} bg-green-100 text-green-800 
+                        {% elif order.status == 'PROCESSING' %} bg-yellow-100 text-yellow-800 
+                        {% else %} bg-gray-100 text-gray-800 {% endif %}">
+                        {{ order.get_status_display }}
+                    </span>
+                </p>
+            </div>
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">Total</h3>
+                <p class="text-lg font-semibold text-gray-800">S/ {{ order.total_price|floatformat:2 }}</p>
+            </div>
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">Falta Pagar</h3>
+                <p class="text-lg font-bold text-red-600">S/ {{ order.remaining_amount|floatformat:2 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md">
+        <div class="p-6 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-700">Modificar Datos del Pedido</h2>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" id="editOrderForm">
+            {% csrf_token %}
+            <div class="p-6 space-y-6">
+                {% if order_form.non_field_errors or formset.non_field_errors %}
+                    <div class="bg-red-50 text-red-700 p-3 rounded-lg border border-red-200 text-sm">
+                        {{ order_form.non_field_errors }}
+                        {{ formset.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% for field in order_form.visible_fields %}
+                        <div>
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}<p class="text-red-600 text-sm mt-1">{{ field.errors|first }}</p>{% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                {% for field in order_form.hidden_fields %}{{ field }}{% endfor %}
+
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Artículos del Pedido</h3>
+                    {{ formset.management_form }}
+                    <div id="formset-container" class="space-y-4">
+                        {% for form in formset %}
+                            <div class="form-row flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                                {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+                                <div class="flex-grow">
+                                    {% if forloop.first %}<label class="text-xs text-gray-600">Categoría</label>{% endif %}
+                                    {{ form.category }}
+                                    {% if form.category.errors %}<p class="text-red-600 text-sm mt-1">{{ form.category.errors|first }}</p>{% endif %}
+                                </div>
+                                <div class="w-24">
+                                    {% if forloop.first %}<label class="text-xs text-gray-600">Cantidad</label>{% endif %}
+                                    {{ form.quantity }}
+                                     {% if form.quantity.errors %}<p class="text-red-600 text-sm mt-1">{{ form.quantity.errors|first }}</p>{% endif %}
+                                </div>
+                                <div>
+                                    {% if form.instance.pk and formset.can_delete %}{{ form.DELETE }}{% endif %}
+                                    <button type="button" class="remove-form-btn bg-red-100 text-red-600 px-3 py-2 rounded-lg hover:bg-red-200" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div id="empty-form" class="hidden">
+                        <div class="form-row flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                            {% for field in formset.empty_form.hidden_fields %}{{ field }}{% endfor %}
+                            <div class="flex-grow">{{ formset.empty_form.category }}</div>
+                            <div class="w-24">{{ formset.empty_form.quantity }}</div>
+                            <div>
+                                <button type="button" class="remove-form-btn bg-red-100 text-red-600 px-3 py-2 rounded-lg hover:bg-red-200" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="add-form-btn" class="mt-4 bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 font-semibold text-sm flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Agregar Artículo
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6 bg-gray-50 rounded-b-xl">
+                <button type="submit" class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 font-bold text-base flex items-center justify-center">
+                    <i class="fas fa-save mr-2"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Aplicar estilos a todos los campos
+    const baseClasses = 'block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm';
+    document.querySelectorAll('form select, form input[type="text"], form input[type="number"], form textarea').forEach(el => {
+        el.classList.add(...baseClasses.split(' '));
+    });
+
+    // Lógica del Formset Dinámico
+    const addFormBtn = document.getElementById('add-form-btn');
+    const formsetContainer = document.getElementById('formset-container');
+    const totalFormsInput = document.querySelector('[name$="-TOTAL_FORMS"]');
+    const emptyFormTemplate = document.getElementById('empty-form').innerHTML;
+    const formsetPrefix = totalFormsInput.name.split('-')[0];
+
+    addFormBtn.addEventListener('click', function() {
+        const formIndex = parseInt(totalFormsInput.value);
+        const newFormHTML = emptyFormTemplate.replace(/__prefix__/g, formIndex);
+        const newFormNode = document.createElement('div');
+        newFormNode.innerHTML = newFormHTML;
+        
+        newFormNode.querySelectorAll('select, input').forEach(el => el.classList.add(...baseClasses.split(' ')));
+        
+        formsetContainer.appendChild(newFormNode.firstElementChild);
+        totalFormsInput.value = formIndex + 1;
+    });
+
+    formsetContainer.addEventListener('click', function(e) {
+        const removeBtn = e.target.closest('.remove-form-btn');
+        if (removeBtn) {
+            const formRow = removeBtn.closest('.form-row');
+            const deleteInput = formRow.querySelector('input[name$="-DELETE"]');
+            
+            if (deleteInput) { // Si el form ya existía y tiene checkbox DELETE
+                deleteInput.checked = true;
+                formRow.style.display = 'none'; // Ocultar en lugar de remover del DOM
+            } else { // Si es un form nuevo que aún no ha sido guardado
+                formRow.remove();
+                // Actualizar total forms solo si se remueve del DOM
+                totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

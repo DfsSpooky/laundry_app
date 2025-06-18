@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Lavandería Moderna | Ropa Limpia, Vida Fácil{% endblock %}</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Aplicamos la fuente Poppins a todo el cuerpo */
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* Efecto suave en los scroll-to */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-700 antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-40 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-blue-800 flex items-center">
+                <i class="fas fa-washing-machine mr-2"></i> Lavandería Moderna
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#servicios" class="text-gray-600 hover:text-blue-700 font-semibold">Servicios</a>
+                <a href="#como-funciona" class="text-gray-600 hover:text-blue-700 font-semibold">¿Cómo Funciona?</a>
+                <a href="#contacto" class="text-gray-600 hover:text-blue-700 font-semibold">Contacto</a>
+            </div>
+            <div>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 font-bold shadow transition-transform duration-300 hover:scale-105">
+                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 font-bold shadow transition-transform duration-300 hover:scale-105">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Iniciar Sesión
+                    </a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="relative h-[60vh] md:h-[70vh] flex items-center justify-center text-white" style="background-image: url('https://images.unsplash.com/photo-1582735689369-4fe892b13283?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center;">
+            <div class="absolute inset-0 bg-black/50"></div> <div class="relative z-10 text-center px-4">
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4">Tu ropa, impecable y a tiempo.</h1>
+                <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto">Deja el lavado en manos expertas. Nos encargamos de tu ropa con el máximo cuidado y eficiencia para que tú disfrutes de tu tiempo.</p>
+                <a href="#servicios" class="bg-white text-blue-700 px-8 py-3 rounded-full hover:bg-slate-200 font-bold text-lg shadow-lg transition-transform duration-300 hover:scale-105">Descubre Nuestros Servicios</a>
+            </div>
+        </section>
+
+        <section id="servicios" class="py-20 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl font-bold mb-3">La solución perfecta para tu ropa</h2>
+                <p class="text-slate-500 mb-12">Ofrecemos un servicio de calidad pensado para tu comodidad.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                        <i class="fas fa-bolt fa-3x text-blue-600 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Rapidez y Eficiencia</h3>
+                        <p class="text-slate-600">Procesamos tus pedidos en tiempo récord para que tengas tu ropa lista cuando la necesites.</p>
+                    </div>
+                    <div class="p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                        <i class="fas fa-leaf fa-3x text-green-600 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Cuidado Ecológico</h3>
+                        <p class="text-slate-600">Utilizamos productos biodegradables y procesos que cuidan el medio ambiente y tus prendas.</p>
+                    </div>
+                    <div class="p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                        <i class="fas fa-qrcode fa-3x text-slate-700 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Seguimiento Digital</h3>
+                        <p class="text-slate-600">Consulta el estado de tu pedido en cualquier momento con nuestro sistema de seguimiento por QR.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="como-funciona" class="py-20">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl font-bold mb-3">Simple en 3 Pasos</h2>
+                <p class="text-slate-500 mb-12">Nuestro proceso es tan fácil como contar hasta tres.</p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-16">
+                    <div class="text-center max-w-xs">
+                        <div class="bg-blue-600 text-white w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4">1</div>
+                        <h3 class="text-xl font-bold mb-2">Trae tu Ropa</h3>
+                        <p class="text-slate-600">Visítanos y entrega tus prendas. Te asignaremos un código de pedido único.</p>
+                    </div>
+                    <div class="text-center max-w-xs">
+                        <div class="bg-blue-600 text-white w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4">2</div>
+                        <h3 class="text-xl font-bold mb-2">Lavado Profesional</h3>
+                        <p class="text-slate-600">Lavamos, secamos y doblamos tu ropa con la más alta tecnología y cuidado.</p>
+                    </div>
+                    <div class="text-center max-w-xs">
+                        <div class="bg-blue-600 text-white w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4">3</div>
+                        <h3 class="text-xl font-bold mb-2">Recoge y Disfruta</h3>
+                        <p class="text-slate-600">Te notificaremos cuando tu pedido esté listo para que lo recojas fresco e impecable.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto" class="bg-slate-800 text-white pt-16 pb-8">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Lavandería Moderna</h3>
+                    <p class="text-slate-400">Simplificando tu vida, una carga de ropa a la vez. Calidad y confianza en Cerro de Pasco.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Menú</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#servicios" class="text-slate-400 hover:text-white">Servicios</a></li>
+                        <li><a href="#como-funciona" class="text-slate-400 hover:text-white">¿Cómo Funciona?</a></li>
+                        <li><a href="{% url 'accounts:login' %}" class="text-slate-400 hover:text-white">Acceso Clientes</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contacto</h3>
+                    <ul class="space-y-2 text-slate-400">
+                        <li class="flex items-start"><i class="fas fa-map-marker-alt w-5 mt-1 mr-2"></i><span>Jr. Ayacucho 123, Cerro de Pasco, Perú</span></li>
+                        <li class="flex items-start"><i class="fas fa-phone w-5 mt-1 mr-2"></i><span>+51 987 654 321</span></li>
+                        <li class="flex items-start"><i class="fas fa-envelope w-5 mt-1 mr-2"></i><span>contacto@lavanderiamoderna.com</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Síguenos</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-slate-400 hover:text-white text-2xl"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-white text-2xl"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-white text-2xl"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-700 text-center pt-6 text-sm text-slate-500">
+                &copy; {% now "Y" %} Lavandería Moderna. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
