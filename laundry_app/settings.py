@@ -82,6 +82,14 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_URL = 'static/'
+
+# AÑADE ESTA LÍNEA AQUÍ
+# Le dice a Django que la "caja" para los archivos estáticos se llamará 'staticfiles'
+# y estará en la carpeta principal de tu proyecto.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
